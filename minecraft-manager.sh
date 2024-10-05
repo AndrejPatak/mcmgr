@@ -12,13 +12,13 @@ tmuxSession="minecraft-session"
 firstRun="true"
 
 
-if [ ! -f "$configPath" ]; then
-    echo "Config file not found. Please re-install or open an issue on github if the problem persists"
-    exit 1
-fi
+#if [ ! -f "$configPath" ]; then
+#    echo "Config file not found. Please re-install or open an issue on github if the problem persists"
+#    exit 1
+#fi
 
-while IFS='=' read -r key value; do
-    if [[ "$key"]]
+#while IFS='=' read -r key value; do
+#    if [[ "$key"]]
 
 if  [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
     echo -e "First time run detected.\nPlease check the configuration: (can be changed in $configPath, or with command arguments) \n"
@@ -31,22 +31,17 @@ if  [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
 else
     case $1 in
         "-e" | "--enable")
-            echo "Enableing not implremented yet"
-            echo "ill try tho"
-            firstRun="false"
-        ;;
-        "-t" | "--tmux-session")
-            case $2 in
-                "")
-                echo "Please provide the name of your tmux session that the minecraft server is running in."
-                ;;
-                *)
-                tmuxSession = $2
-                echo "Set the tmux-session to: " $2
-                ;;
-            esac
+            echo "Enableing not implremented yet, to enable mcmgr, configure the script and set firstRun to 'true'"
+            #echo "ill try tho"
+            #firstRun="false"
         ;;
         "--run" | "-r")
+
+            if [ "$tmuxMode" = "true" ] && [ "$2" = "-t" ] || [ "$2" = "--tmux-session" ] && [ "$3" != ""]; then
+                tmuxSession="$3"
+            fi
+
+
             if [ "$tmuxMode" = "true" ]; then
                 tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
                 echo "Started minecraft server in new tmux session: $tmuxSession"
@@ -57,21 +52,31 @@ else
         ;;
         "--stop" | "-s")
             if [ "$tmuxMode" = "true" ]; then
-                tmux send-keys -t $minecraftSession 'stop' C-m
-                echo "Stopped the server and closed the $minecraftSession tmux session"
+                tmux send-keys -t $tmuxSession 'stop' C-m
+                echo "Stopped the server and closed the $tmuxSession tmux session"
+            else
+                echo "Stopping is not supported without tmux mode"
             fi
             ;;
         "--restart" | "-re")
-            for ((i = 0; i < 10; i++));
-                do 
-                    echo "The server is restarting in " $((10 - $i)) " seconds..."
-                    sleep 1;
-                done
-            tmux send-keys -t $minecraftSession 'stop' C-m
-            echo "Restarting server now."
-            sleep 2
-            tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
-            
+            if [ "$tmuxMode" = "true" ]; then
+
+                if [ "$2" = "-t" ] || [ "$2" = "--tmux-session" ] && [ "$3" != ""]; then
+                    tmuxSession="$3"
+                fi
+
+                for ((i = 0; i < 10; i++));
+                    do 
+                        echo "The server is restarting in " $((10 - $i)) " seconds..."
+                        sleep 1;
+                    done
+                tmux send-keys -t $tmuxSession 'stop' C-m
+                echo "Restarting server now."
+                sleep 2
+                tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
+            else
+                echo "Restarting is not supported without tmux mode"
+            fi    
         ;;
         "--custom-jar" | -j)
             if [ $2 != "" ]; then
@@ -85,7 +90,7 @@ else
             ;;
         *)
             echo "Unknown argument: " $1
-            echo "For proper usage see 'mcctrl -h' or 'mcmgr --help'"
+            echo "For proper usage see 'mcctrl -h' or 'mcmgr --help' (jk lmao, i didnt implement that yet)"
             ;;
     esac
 fi
