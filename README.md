@@ -36,3 +36,6 @@ Once configured properly, this script has a few usage arguments. Here's a list a
 | -t, --tmux-session | Add this option when running, stopping or restarting the server to specify which tmux session is affected |
 | -j, --custom-jar | Specify the name of the jar to be used for future starts of the server. DOES NOT WORK YET |
 
+Dependancies:
+
+Bash, Tmux (optional, but limited functionality without)
