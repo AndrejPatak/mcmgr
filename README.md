@@ -18,9 +18,10 @@ First open 'minecraft-manager.sh' in your preffered editor. At the top you will 
 
 | Option      | Default value | Explenation      |
 | ------------- | ------------- | ------------- |
-| configPath= | "./mcmgr.config" | As of right now, this option does nothing. |
+| configPath= | "/home/$USER/.config/mcmgr/mcmgr.config" | As of right now, this option does nothing. |
 | minecraftPath= | "/home/$USER/minecraft/" | This is the path to your minecraft directory. This is where the mods, world and other folders are stored. By defualt the script assumes your minecraft directory is in in your home directory. |
 | minecraftJarCommand= | "java -jar $minecraftPath""server.jar nogui" | This option sets which command is used to run the server jar file. If you want to change the RAM paramaters, look it up on google. If you already have your own command, paste it in here, but replace the name of the server jar file with $minecraftPath. Eg. if your server jar is named "fabric-server.jar" and you want to run the server with 8GB of ram, you would set the option to: "java -Xmx8192M -Xms8192M -jar $minecraftPath""fabric-server.jar nogui"|
+| modsPath= || "/home/$USER/minecraft/mods/" || This option defines where to download the mods for your minecraft server. |
 | tmuxMode= | "false" | This tells the script if it should use tmux to run the minecraft server in. Using tmux allows for stopping, restarting and hooking into the console from mcmgr. |
 | tmuxSession= | "minecraft-session" | This tells the script what name it should assign to the tmux session when creating one. The default value works perfectly in most cases, but if you want to add your own automation scripts into the mix, take note of the value of this option |
 | firstRun= | "true" | This tells the script if it's fine to run with the options that are currently set. If it is false, mcmgr will always exit with a message to check your config of mcmgr and to set this option to "true" |
@@ -35,7 +36,9 @@ Once configured properly, this script has a few usage arguments. Here's a list a
 | -re, --restart | This option restarts the server, giving the players a 10 second countdown |
 | -t, --tmux-session | Add this option when running, stopping or restarting the server to specify which tmux session is affected |
 | -j, --custom-jar | Specify the name of the jar to be used for future starts of the server. DOES NOT WORK YET |
+| -m, --download-mod | Download a mod from a url. This url need to point directly to a jar file. Example with the [ETF] Entity Texture Features mod on modrinth: "https://cdn.modrinth.com/data/BVzZfTc1/versions/qQQ5ffvS/entity_texture_features_fabric_1.21-6.2.5.jar" 
+As of right now, modpacks are not supported. |
 
 Dependancies:
 
-Bash, Tmux (optional, but limited functionality without)
+bash, tmux (optional, but limited functionality without), wget (optional for mod downloading), java (required to start the server, duh)
