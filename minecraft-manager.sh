@@ -1,7 +1,9 @@
 #!/bin/bash
 
-#configPath="/home/$USER/.config/mcmgr/mcmgr.config"
-configPath="./mcmgr.config"
+configPath="/home/$USER/.config/mcmgr/mcmgr.config"
+
+# Config path used for testing
+#configPath="./mcmgr.config"
 
 minecraftPath="/home/$USER/minecraft/"
 minecraftJarCommand="java -jar $minecraftPath""server.jar nogui"
@@ -22,7 +24,7 @@ firstRun="false"
 #while IFS='=' read -r key value; do
 #    if [[ "$key"]]
 
-if  [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
+if [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
     echo -e "First time run detected.\nPlease check the configuration: (can be changed in $configPath, or with command arguments) \n"
     echo "Path to the minecraft directory: $minecraftPath"
     echo "Java command to run the server: $minecraftJarCommand"
@@ -32,7 +34,19 @@ if  [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
     echo -e "\nTo enable mcmgr and hide this message run 'mcmgr -e' or 'mcmgr --enable'"
 else
     case $1 in
-
+        "-c" | "--command")
+            if [ -z "$2" ]; then
+                echo "No command to run in the server cosnole was provided"
+            else
+                tmux send-keys -t "$miecraftSession" "$2" C-m
+                if [ "$3" == "-k" ] || [ "$3" == "--keep" ]; then
+                    tmux attach -t "$minecraftSession"
+                else
+                    if [ -n "$3" ]; then
+                        echo "Unknown argument""$3"" . To stay in your shell and not show the minecraft console output, add -k or --keep here. Otherwise, only the command is needed."
+                    fi
+                fi
+    ;;
         "-m" | "--download-mod")
             if [ "$2" = "" ]; then
                 echo "No link to mod provided"
@@ -49,6 +63,7 @@ else
         ;;
         "-e" | "--enable")
             echo "Enableing not implremented yet, to enable mcmgr, configure the script and set firstRun to 'true'"
+            #this dont work :(
             #echo "ill try tho"
             #firstRun="false"
         ;;
@@ -104,10 +119,10 @@ else
         ;;
         "")
             echo "No arguments provided."
-            ;;
+        ;;
         *)
             echo "Unknown argument: " $1
             echo "For proper usage see 'mcctrl -h' or 'mcmgr --help' (jk lmao, i didnt implement that yet)"
-            ;;
+        ;;
     esac
 fi
