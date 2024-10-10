@@ -6,10 +6,12 @@ configPath="./mcmgr.config"
 minecraftPath="/home/$USER/minecraft/"
 minecraftJarCommand="java -jar $minecraftPath""server.jar nogui"
 
+modsPath="${minecraftPath}mods/"
+
 tmuxMode="false"
 tmuxSession="minecraft-session"
 
-firstRun="true"
+firstRun="false"
 
 
 #if [ ! -f "$configPath" ]; then
@@ -30,6 +32,21 @@ if  [ "$1" != "-e" ] && [ "$1" != "--enable" ] && [ $firstRun = "true" ]; then
     echo -e "\nTo enable mcmgr and hide this message run 'mcmgr -e' or 'mcmgr --enable'"
 else
     case $1 in
+
+        "-m" | "--download-mod")
+            if [ "$2" = "" ]; then
+                echo "No link to mod provided"
+            else
+                if [[ "$2" != *"/"*".jar"* ]]; then
+                    echo "The url provided doesn't seem to point to a jar file. See mcmgr -h or mcmgr --help for an example url"
+                else
+                    pastWorkingDirectory="$PWD"
+                    echo "Downloading mod to $modsPath"
+                    cd "$modsPath" && wget "$2"
+                    cd "$pastWorkingDirectory"
+                fi
+            fi
+        ;;
         "-e" | "--enable")
             echo "Enableing not implremented yet, to enable mcmgr, configure the script and set firstRun to 'true'"
             #echo "ill try tho"
@@ -57,7 +74,7 @@ else
             else
                 echo "Stopping is not supported without tmux mode"
             fi
-            ;;
+        ;;
         "--restart" | "-re")
             if [ "$tmuxMode" = "true" ]; then
 
