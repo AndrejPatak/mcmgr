@@ -107,7 +107,8 @@ else
                 tmux send-keys -t $tmuxSession 'stop' C-m
                 echo "Restarting server now."
                 sleep 2
-                tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
+                tmux new-session -d -s $tmuxSession
+				tmux send-keys -t $tmuxSession "cd $minecraftPath && $minecraftJarCommand" C-m
             else
                 echo "Restarting is not supported without tmux mode"
             fi    
