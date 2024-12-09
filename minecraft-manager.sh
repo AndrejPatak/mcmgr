@@ -10,7 +10,7 @@ minecraftJarCommand="java -jar $minecraftPath""server.jar nogui"
 
 modsPath="${minecraftPath}mods/"
 
-tmuxMode="false"
+tmuxMode="true"
 tmuxSession="minecraft-session"
 
 firstRun="false"
@@ -46,7 +46,8 @@ else
                         echo "Unknown argument""$3"" . To stay in your shell and not show the minecraft console output, add -k or --keep here. Otherwise, only the command is needed."
                     fi
                 fi
-    ;;
+			fi
+    	;;
         "-m" | "--download-mod")
             if [ "$2" = "" ]; then
                 echo "No link to mod provided"
@@ -62,7 +63,7 @@ else
             fi
         ;;
         "-e" | "--enable")
-            echo "Enableing not implremented yet, to enable mcmgr, configure the script and set firstRun to 'true'"
+            echo "Enableing not implemented yet, to enable mcmgr, configure the script and set firstRun to 'true'"
             #this dont work :(
             #echo "ill try tho"
             #firstRun="false"
@@ -77,7 +78,7 @@ else
             if [ "$tmuxMode" = "true" ]; then
                 tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
                 echo "Started minecraft server in new tmux session: $tmuxSession"
-                echo "To interact witht the console run 'tmux attach -t $tmuxSession or connect to your server via RCON"
+                echo "To interact with the console run 'tmux attach -t $tmuxSession or connect to your server via RCON"
             else
                 exec $minecraftJarCommand
             fi
