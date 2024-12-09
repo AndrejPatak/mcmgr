@@ -76,8 +76,9 @@ else
 
 
             if [ "$tmuxMode" = "true" ]; then
-                tmux new-session -d -s $tmuxSession "cd $minecraftPath && $minecraftJarCommand"
-                echo "Started minecraft server in new tmux session: $tmuxSession"
+                tmux new-session -d -s $tmuxSession 
+				tmux send-keys -t $tmuxSession "cd $minecraftPath && $minecraftJarCommand" C-m
+				echo "Started minecraft server in new tmux session: $tmuxSession"
                 echo "To interact with the console run 'tmux attach -t $tmuxSession or connect to your server via RCON"
             else
                 exec $minecraftJarCommand
